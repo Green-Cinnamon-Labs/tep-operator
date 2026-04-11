@@ -90,7 +90,20 @@ func (r *PLCMachineReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 	}
 	status.IsdActive = false
 
-	// 5. Record XMEAS readings in status
+	// 5. Passive full observation — all XMEAS (continuous + analyzers) and all XMV.
+	// This runs unconditionally, independent of spec.operatingRanges.
+	// Source: TEP benchmark (Downs & Vogel 1993), Tables 4, 5, 6.
+	xmeasCopy := make([]float64, len(metrics.Xmeas))
+	copy(xmeasCopy, metrics.Xmeas)
+	xmvCopy := make([]float64, len(metrics.Xmv))
+	copy(xmvCopy, metrics.Xmv)
+	status.Observation = &v1alpha1.PlantObservation{
+		Xmeas:     xmeasCopy,
+		Xmv:       xmvCopy,
+		DerivNorm: metrics.DerivNorm,
+	}
+
+	// 6. Policy-driven evaluation — only variables declared in spec.operatingRanges.
 	variables := make([]v1alpha1.VariableStatus, 0, len(spec.OperatingRanges))
 	for _, rng := range spec.OperatingRanges {
 		idx := int(rng.XmeasIndex)
@@ -109,23 +122,24 @@ func (r *PLCMachineReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 	}
 	status.Variables = variables
 
-	// 6. Phase = Stable (observation only, no evaluation logic yet)
+	// 7. Phase = Stable (observation only, no evaluation logic yet)
 	status.Phase = v1alpha1.PhaseStable
 
 	log.Info("observation cycle complete",
 		"plantTime", metrics.TH,
-		"variables", len(variables),
 		"xmeas_count", len(metrics.Xmeas),
 		"xmv_count", len(metrics.Xmv),
+		"policy_variables", len(variables),
+		"deriv_norm", metrics.DerivNorm,
 	)
 
-	// 7. Write status
+	// 8. Write status
 	if err := r.Status().Update(ctx, &machine); err != nil {
 		log.Error(err, "failed to update status")
 		return ctrl.Result{}, err
 	}
 
-	// 8. Requeue at base interval
+	// 9. Requeue at base interval
 	interval := time.Duration(spec.MonitoringInterval.BaseMs) * time.Millisecond
 	if interval == 0 {
 		interval = 2 * time.Second

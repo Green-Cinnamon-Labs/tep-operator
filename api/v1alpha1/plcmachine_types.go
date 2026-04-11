@@ -206,6 +206,31 @@ const (
 	PhaseShutdown PLCMachinePhase = "Shutdown"
 )
 
+// PlantObservation is a passive full snapshot of the plant state.
+// It is recorded every reconcile cycle regardless of any policy or operating ranges.
+// This is NOT the supervisory evaluation — it is raw observation for diagnostics,
+// dashboards, and future control logic.
+//
+// Source: TEP benchmark (Downs & Vogel 1993).
+//   - Xmeas[0..21]  → XMEAS(1..22):  continuous process measurements (Table 4)
+//   - Xmeas[22..40] → XMEAS(23..41): sampled analyzer measurements (Table 5)
+//   - Xmv[0..11]    → XMV(1..12):    manipulated variables (Table 6)
+type PlantObservation struct {
+	// xmeas contains all 41 process measurements (0-indexed).
+	// XMEAS(1..22) are continuous; XMEAS(23..41) are sampled analyzers.
+	// +optional
+	Xmeas []float64 `json:"xmeas,omitempty"`
+
+	// xmv contains all 12 manipulated variables (0-indexed).
+	// +optional
+	Xmv []float64 `json:"xmv,omitempty"`
+
+	// derivNorm is the norm of the state derivative vector.
+	// Near zero means steady state; high values indicate transient.
+	// +optional
+	DerivNorm float64 `json:"derivNorm,omitempty"`
+}
+
 // PLCMachineStatus is the operator's memory. It stores the last observed
 // state of the plant so the next reconcile cycle can detect trends,
 // evaluate whether the plant is in a transient, and decide whether to act.
@@ -224,8 +249,15 @@ type PLCMachineStatus struct {
 
 	// variables stores the operator's memory of each monitored XMEAS.
 	// Includes current value, previous value, trend, and in-range flag.
+	// Only populated for variables declared in spec.operatingRanges.
 	// +optional
 	Variables []VariableStatus `json:"variables,omitempty"`
+
+	// observation is a passive full snapshot of all plant signals.
+	// Populated every reconcile cycle regardless of policy.
+	// Contains all 41 XMEAS (continuous + analyzers) and all 12 XMV.
+	// +optional
+	Observation *PlantObservation `json:"observation,omitempty"`
 
 	// lastAction records the most recent supervisory action taken.
 	// Nil if the operator has not yet intervened.

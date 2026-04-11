@@ -6,7 +6,7 @@ metadata:
     app.kubernetes.io/managed-by: kustomize
   name: tep-baseline
 spec:
-  plantAddress: "te-plant.default.svc:50051"
+  plantAddress: "host.docker.internal:50051"
 
   # Faixas aceitaveis pra variaveis da planta.
   # Se o valor sair dessa faixa, o operator avalia as responseRules.
