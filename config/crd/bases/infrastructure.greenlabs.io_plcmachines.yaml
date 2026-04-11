@@ -279,6 +279,30 @@ spec:
                   plant.
                 format: date-time
                 type: string
+              observation:
+                description: |-
+                  observation is a passive full snapshot of all plant signals.
+                  Populated every reconcile cycle regardless of policy.
+                  Contains all 41 XMEAS (continuous + analyzers) and all 12 XMV.
+                properties:
+                  derivNorm:
+                    description: |-
+                      derivNorm is the norm of the state derivative vector.
+                      Near zero means steady state; high values indicate transient.
+                    type: number
+                  xmeas:
+                    description: |-
+                      xmeas contains all 41 process measurements (0-indexed).
+                      XMEAS(1..22) are continuous; XMEAS(23..41) are sampled analyzers.
+                    items:
+                      type: number
+                    type: array
+                  xmv:
+                    description: xmv contains all 12 manipulated variables (0-indexed).
+                    items:
+                      type: number
+                    type: array
+                type: object
               phase:
                 description: phase summarizes the plant state as perceived by the
                   operator.
@@ -296,6 +320,7 @@ spec:
                 description: |-
                   variables stores the operator's memory of each monitored XMEAS.
                   Includes current value, previous value, trend, and in-range flag.
+                  Only populated for variables declared in spec.operatingRanges.
                 items:
                   description: VariableStatus is the operator's memory of one plant
                     measurement.
