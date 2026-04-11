@@ -27,7 +27,7 @@ import (
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	infrastructurev1alpha1 "github.com/Green-Cinnamon-Labs/cluster-api-provider-plc/api/v1alpha1"
+	infrastructurev1alpha1 "github.com/Green-Cinnamon-Labs/tep-operator/api/v1alpha1"
 )
 
 var _ = Describe("PLCMachine Controller", func() {

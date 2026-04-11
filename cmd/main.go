@@ -35,8 +35,8 @@ import (
 	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
 	"sigs.k8s.io/controller-runtime/pkg/webhook"
 
-	infrastructurev1alpha1 "github.com/Green-Cinnamon-Labs/cluster-api-provider-plc/api/v1alpha1"
-	"github.com/Green-Cinnamon-Labs/cluster-api-provider-plc/internal/controller"
+	infrastructurev1alpha1 "github.com/Green-Cinnamon-Labs/tep-operator/api/v1alpha1"
+	"github.com/Green-Cinnamon-Labs/tep-operator/internal/controller"
 	// +kubebuilder:scaffold:imports
 )
 

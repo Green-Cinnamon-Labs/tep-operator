@@ -1,5 +1,5 @@
-namespace: cluster-api-provider-plc-system
-namePrefix: cluster-api-provider-plc-
+namespace: tep-operator-system
+namePrefix: tep-operator-
 
 resources:
 - ../crd

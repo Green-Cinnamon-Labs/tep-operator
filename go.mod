@@ -1,4 +1,4 @@
-module github.com/Green-Cinnamon-Labs/cluster-api-provider-plc
+module github.com/Green-Cinnamon-Labs/tep-operator
 
 go 1.25.3
 

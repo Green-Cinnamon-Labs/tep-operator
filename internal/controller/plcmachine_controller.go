@@ -27,8 +27,8 @@ import (
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	v1alpha1 "github.com/Green-Cinnamon-Labs/cluster-api-provider-plc/api/v1alpha1"
-	plantgrpc "github.com/Green-Cinnamon-Labs/cluster-api-provider-plc/internal/grpc"
+	v1alpha1 "github.com/Green-Cinnamon-Labs/tep-operator/api/v1alpha1"
+	plantgrpc "github.com/Green-Cinnamon-Labs/tep-operator/internal/grpc"
 )
 
 // PLCMachineReconciler reconciles a PLCMachine object.

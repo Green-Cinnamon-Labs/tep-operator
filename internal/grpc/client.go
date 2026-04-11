@@ -10,7 +10,7 @@ import (
 	"fmt"
 	"time"
 
-	pb "github.com/Green-Cinnamon-Labs/cluster-api-provider-plc/internal/grpc/gen/tepv1"
+	pb "github.com/Green-Cinnamon-Labs/tep-operator/internal/grpc/gen/tepv1"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )

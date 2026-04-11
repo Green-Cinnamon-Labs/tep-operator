@@ -2,7 +2,7 @@
 
 ## O que e esse repo?
 
-Esse e o **operator Kubernetes** que atua como controlador supervisorio da planta TEP (Tennessee Eastman Process). O nome `cluster-api-provider-plc` vem da analogia com os providers do Cluster API — assim como o CAPA provisiona maquinas na AWS, esse provider supervisiona controladores numa planta industrial via gRPC.
+Esse e o **operator Kubernetes** que atua como controlador supervisorio da planta TEP (Tennessee Eastman Process). O nome `tep-operator` vem da analogia com os providers do Cluster API — assim como o CAPA provisiona maquinas na AWS, esse provider supervisiona controladores numa planta industrial via gRPC.
 
 A planta vive sozinha — tem controladores PID ja rodando e sofre disturbios aleatorios. O operator nao empurra configuracao. Ele **observa** as variaveis medidas (XMEAS) via gRPC, **avalia** se estao dentro de faixas aceitaveis, **decide** se precisa intervir, e **age** ajustando parametros dos controladores existentes. Se a planta esta estavel, nao faz nada.
 
@@ -12,9 +12,9 @@ O lab tem 4 repositorios:
 
 ```
 spec-tennessee-eastman       <- issues, specs, decisoes de arquitetura
-fork-tennesseeEastman        <- a planta (Rust) + gRPC server
-cluster-api-provider-plc     <- ESTE REPO: o operator K8s (Go)
-lab-k8s-supervisor           <- infra do cluster (Kind, manifests de deploy)
+tep-plant        <- a planta (Rust) + gRPC server
+tep-operator     <- ESTE REPO: o operator K8s (Go)
+tep-supervisor           <- infra do cluster (Kind, manifests de deploy)
 ```
 
 O fluxo e:
@@ -36,7 +36,7 @@ flowchart LR
 - **Go 1.25+** com **Kubebuilder 4.12** (controller-runtime v0.23)
 - API group: `infrastructure.greenlabs.io/v1alpha1`
 - CRD unica: `PLCMachine`
-- Comunicacao com a planta: **gRPC** (proto definido no repo `fork-tennesseeEastman`)
+- Comunicacao com a planta: **gRPC** (proto definido no repo `tep-plant`)
 
 ## O que ja esta pronto
 

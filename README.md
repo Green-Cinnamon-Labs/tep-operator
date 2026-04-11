@@ -1,4 +1,4 @@
-# cluster-api-provider-plc
+# tep-operator
 
 Operator Kubernetes que atua como controlador supervisorio da planta Tennessee Eastman Process (TEP). Monitora variaveis da planta via gRPC, avalia se estao dentro de faixas aceitaveis, e ajusta parametros dos controladores quando necessario.
 
@@ -81,9 +81,9 @@ Detalhes completos em [docs/03-crd-plcmachine.md](docs/03-crd-plcmachine.md).
 | Repo                                                                                    | O que faz                          |
 | --------------------------------------------------------------------------------------- | ---------------------------------- |
 | [spec-tennessee-eastman](https://github.com/Green-Cinnamon-Labs/spec-tennessee-eastman) | Issues, specs, decisoes            |
-| [fork-tennesseeEastman](https://github.com/Green-Cinnamon-Labs/fork-tennesseeEastman)   | Planta TEP (Rust) + gRPC server    |
-| **cluster-api-provider-plc**                                                            | **Este repo** — operator K8s (Go)  |
-| [lab-k8s-supervisor](https://github.com/Green-Cinnamon-Labs/lab-k8s-supervisor)         | Infra do cluster (Kind, manifests) |
+| [tep-plant](https://github.com/Green-Cinnamon-Labs/tep-plant)   | Planta TEP (Rust) + gRPC server    |
+| **tep-operator**                                                            | **Este repo** — operator K8s (Go)  |
+| [tep-supervisor](https://github.com/Green-Cinnamon-Labs/tep-supervisor)         | Infra do cluster (Kind, manifests) |
 
 ## Estrutura
 

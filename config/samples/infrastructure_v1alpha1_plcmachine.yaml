@@ -2,7 +2,7 @@ apiVersion: infrastructure.greenlabs.io/v1alpha1
 kind: PLCMachine
 metadata:
   labels:
-    app.kubernetes.io/name: cluster-api-provider-plc
+    app.kubernetes.io/name: tep-operator
     app.kubernetes.io/managed-by: kustomize
   name: tep-baseline
 spec:

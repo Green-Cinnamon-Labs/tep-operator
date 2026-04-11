@@ -748,7 +748,7 @@ const file_tep_v1_plant_proto_rawDesc = "" +
 	"\rStreamMetrics\x12\x1c.tep.v1.StreamMetricsRequest\x1a\x14.tep.v1.PlantMetrics0\x01\x12D\n" +
 	"\x0eGetPlantStatus\x12\x1d.tep.v1.GetPlantStatusRequest\x1a\x13.tep.v1.PlantStatus\x12R\n" +
 	"\x0fListControllers\x12\x1e.tep.v1.ListControllersRequest\x1a\x1f.tep.v1.ListControllersResponse\x12U\n" +
-	"\x10UpdateController\x12\x1f.tep.v1.UpdateControllerRequest\x1a .tep.v1.UpdateControllerResponseBQZOgithub.com/Green-Cinnamon-Labs/cluster-api-provider-plc/internal/grpc/gen/tepv1b\x06proto3"
+	"\x10UpdateController\x12\x1f.tep.v1.UpdateControllerRequest\x1a .tep.v1.UpdateControllerResponseBQZOgithub.com/Green-Cinnamon-Labs/tep-operator/internal/grpc/gen/tepv1b\x06proto3"
 
 var (
 	file_tep_v1_plant_proto_rawDescOnce sync.Once

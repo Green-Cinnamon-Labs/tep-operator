@@ -41,7 +41,7 @@ help: ## Display this help.
 
 ##@ Proto
 
-GOMOD=github.com/Green-Cinnamon-Labs/cluster-api-provider-plc
+GOMOD=github.com/Green-Cinnamon-Labs/tep-operator
 
 .PHONY: proto
 proto: ## Generate Go stubs from plant.proto
