@@ -1,45 +1,45 @@
 # tep-operator
 
-Operator Kubernetes que atua como controlador supervisorio da planta Tennessee Eastman Process (TEP). Monitora variaveis da planta via gRPC, avalia se estao dentro de faixas aceitaveis, e ajusta parametros dos controladores quando necessario.
+Kubernetes operator that acts as the supervisory controller for the Tennessee Eastman Process (TEP) plant. Monitors plant variables via gRPC, evaluates whether they are within acceptable ranges, and adjusts controller parameters when needed.
 
-## Contexto
+## Context
 
-Esse operator faz parte do **TEP Digital Twin Lab** — um laboratorio onde o Kubernetes atua como sistema supervisorio de uma planta quimica simulada. A planta vive sozinha, com controladores PID rodando e disturbios aleatorios. O operator nao empurra config — ele observa, avalia, decide e age.
+This operator is part of the **TEP Digital Twin Lab** — a lab where Kubernetes acts as the supervisory system for a simulated chemical plant. The plant runs on its own, with PID controllers running and random disturbances. The operator doesn't push config — it observes, evaluates, decides, and acts.
 
 ```
 kubectl apply -f plcmachine.yaml
-  -> operator le a politica supervisoria (faixas, regras)
-    -> conecta via gRPC na planta
-      -> le XMEAS (variaveis medidas)
-        -> se algo sai da faixa, ajusta controlador
-          -> grava estado lido como memoria (status)
+  -> operator reads the supervisory policy (ranges, rules)
+    -> connects to the plant via gRPC
+      -> reads XMEAS (measured variables)
+        -> if something leaves its range, adjusts a controller
+          -> records the read state as memory (status)
 ```
 
 ## Quick start
 
 ```bash
-# Pre-requisitos: Go 1.25+, Docker, Kind, kubectl
+# Prerequisites: Go 1.25+, Docker, Kind, kubectl
 
-# Gerar codigo e manifests
+# Generate code and manifests
 make generate manifests
 
-# Build da imagem
+# Build the image
 make docker-build IMG=controller:latest
 
-# Criar cluster Kind e deployar
+# Create a Kind cluster and deploy
 kind create cluster --name tep-lab
 kind load docker-image controller:latest --name tep-lab
 make install      # CRDs
 make deploy IMG=controller:latest
 
-# Criar um PLCMachine
+# Create a PLCMachine
 kubectl apply -f config/samples/infrastructure_v1alpha1_plcmachine.yaml
 kubectl get plcmachines
 ```
 
 ## CRD: PLCMachine
 
-Recurso unico do operator. O `.spec` define a **politica supervisoria** — faixas aceitaveis e regras de resposta. O `.status` e a **memoria** do operator — ultimas leituras, tendencias, acoes tomadas.
+The operator's single resource. `.spec` defines the **supervisory policy** — acceptable ranges and response rules. `.status` is the operator's **memory** — latest readings, trends, actions taken.
 
 ```yaml
 apiVersion: infrastructure.greenlabs.io/v1alpha1
@@ -50,7 +50,7 @@ spec:
   plantAddress: "te-plant.default.svc:50051"
   operatingRanges:
     - name: reactor_pressure
-      xmeasIndex: 6          # XMEAS(7) — pressao do reator
+      xmeasIndex: 6          # XMEAS(7) — reactor pressure
       min: 2600.0
       max: 2800.0
   responseRules:
@@ -65,43 +65,43 @@ spec:
     transientMs: 200
 ```
 
-Detalhes completos em [docs/03-crd-plcmachine.md](docs/03-crd-plcmachine.md).
+Full details in [docs/03-crd-plcmachine.md](docs/03-crd-plcmachine.md).
 
-## Documentacao
+## Documentation
 
-| Doc                                                        | Conteudo                                                          |
-| ---------------------------------------------------------- | ----------------------------------------------------------------- |
-| [01 — Visao geral](docs/01-visao-geral.md)                 | O que e esse repo, onde se encaixa, estado atual                  |
-| [02 — Anatomia do projeto](docs/02-anatomia-do-projeto.md) | Mapa de arquivos: o que editar vs o que e gerado pelo Kubebuilder |
-| [03 — CRD PLCMachine](docs/03-crd-plcmachine.md)           | Spec, status, phases, mapeamento com gRPC                         |
-| [04 — Reconciliacao](docs/04-reconciliacao.md)             | Como o reconciler funciona (design, fluxo, idempotencia)          |
+| Doc                                                        | Content                                                           |
+| ---------------------------------------------------------- | ------------------------------------------------------------------ |
+| [01 — Overview](docs/01-visao-geral.md)                    | What this repo is, where it fits, current state                  |
+| [02 — Project anatomy](docs/02-anatomia-do-projeto.md)     | File map: what to edit vs. what Kubebuilder generates             |
+| [03 — CRD PLCMachine](docs/03-crd-plcmachine.md)           | Spec, status, phases, gRPC mapping                                |
+| [04 — Reconciliation](docs/04-reconciliacao.md)            | How the reconciler works (design, flow, idempotency)              |
 
-## Repositorios do lab
+## Lab repositories
 
-| Repo                                                                                    | O que faz                          |
-| --------------------------------------------------------------------------------------- | ---------------------------------- |
-| [spec-tennessee-eastman](https://github.com/Green-Cinnamon-Labs/spec-tennessee-eastman) | Issues, specs, decisoes            |
-| [tep-plant](https://github.com/Green-Cinnamon-Labs/tep-plant)   | Planta TEP (Rust) + gRPC server    |
-| **tep-operator**                                                            | **Este repo** — operator K8s (Go)  |
-| [tep-supervisor](https://github.com/Green-Cinnamon-Labs/tep-supervisor)         | Infra do cluster (Kind, manifests) |
+| Repo                                                                                    | What it does                       |
+| --------------------------------------------------------------------------------------- | ----------------------------------- |
+| [spec-tennessee-eastman](https://github.com/Green-Cinnamon-Labs/spec-tennessee-eastman) | Issues, specs, decisions            |
+| [tep-plant](https://github.com/Green-Cinnamon-Labs/tep-plant)   | TEP plant (Rust) + gRPC server    |
+| **tep-operator**                                                            | **This repo** — K8s operator (Go)  |
+| [tep-supervisor](https://github.com/Green-Cinnamon-Labs/tep-supervisor)         | Cluster infra (Kind, manifests) |
 
-## Estrutura
+## Structure
 
 ```
 api/v1alpha1/          <- CRD types (PLCMachine spec/status)
-internal/controller/   <- Reconciler (logica supervisoria)
-cmd/main.go            <- Entry point do manager
+internal/controller/   <- Reconciler (supervisory logic)
+cmd/main.go            <- Manager entry point
 config/                <- Kustomize: CRD, RBAC, deployment
-docs/                  <- Documentacao do projeto
+docs/                  <- Project documentation
 ```
 
-> Para entender o que cada arquivo faz e o que e boilerplate do Kubebuilder, veja [docs/02-anatomia-do-projeto.md](docs/02-anatomia-do-projeto.md).
+> To understand what each file does and what is Kubebuilder boilerplate, see [docs/02-anatomia-do-projeto.md](docs/02-anatomia-do-projeto.md).
 
-## Status do desenvolvimento
+## Development status
 
-- [x] Scaffold Kubebuilder
-- [x] CRD PLCMachine com politica supervisoria (#37)
-- [ ] Reconciler com gRPC client (#38)
-- [ ] Setup Kind cluster (#39)
-- [ ] Deploy planta + operator (#40)
-- [ ] Teste E2E: CR -> disturbio -> reconciliacao (#41)
+- [x] Kubebuilder scaffold
+- [x] PLCMachine CRD with supervisory policy (#37)
+- [ ] Reconciler with gRPC client (#38)
+- [ ] Kind cluster setup (#39)
+- [ ] Deploy plant + operator (#40)
+- [ ] E2E test: CR -> disturbance -> reconciliation (#41)
