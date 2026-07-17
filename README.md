@@ -4,7 +4,7 @@ Kubernetes operator that acts as the supervisory controller for the Tennessee Ea
 
 ## Context
 
-This operator is part of the **TEP Digital Twin Lab** — a lab where Kubernetes acts as the supervisory system for a simulated chemical plant. The plant runs on its own, with PID controllers running and random disturbances. The operator doesn't push config — it observes, evaluates, decides, and acts.
+This operator is part of the **TEP CPS Lab** — a lab where Kubernetes acts as the supervisory system for a simulated chemical plant (a Cyber-Physical System, not a "digital twin" — there is no physical reference plant). The plant runs on its own, with PID controllers running and random disturbances. The operator doesn't push config — it observes, evaluates, decides, and acts.
 
 ```
 kubectl apply -f plcmachine.yaml
